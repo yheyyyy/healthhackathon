@@ -11,6 +11,16 @@ from datetime import datetime, timedelta
 from get_response import get_response
 
 def extract_appointment_details(message):
+    """
+    Extracts appointment details from the given message and returns them in a JSON format.
+    The function ensures the date is in the correct format and retries if there are any errors.
+    
+    Parameters:
+        message (str): The message containing the appointment details.
+        
+    Returns:
+        dict: The extracted appointment details in a JSON format.
+    """
     json_format = """
     {
     "appointment":
@@ -50,13 +60,23 @@ def extract_appointment_details(message):
     return appointment_details
 
 def json_checker(json_data):
+    """
+    Checks if the JSON data contains the required keys and sets default values if needed.
+    Parameters:
+        json_data (dict): The JSON data to be checked.
+    Returns:
+        dict: The JSON data with default values set if needed
+    """
     if json_data.get("appointment") is None:
         print("Using Default Appointment Name")
         json_data["appointment"] = "Health Appointment"
     return json_data
 
 def get_google_calendar_service():
-    """Authenticate and return a Google Calendar service instance."""
+    """Authenticate and return a Google Calendar service instance.
+    Returns:
+        googleapiclient.discovery.Resource: The Google Calendar service instance.
+    """
     load_dotenv()
     SCOPES = ["https://www.googleapis.com/auth/calendar"]
 
@@ -85,7 +105,13 @@ def get_google_calendar_service():
     return service
 
 def build_event_body(event_details: dict, duration: int) -> dict:
-    """Construct the event body required by the Google Calendar API."""
+    """Construct the event body required by the Google Calendar API.
+    Parameters:
+        event_details (dict): The details of the event to be created.
+        duration (int): The duration of the event in hours.
+    Returns:
+       dict: The event body for the Google Calendar API.
+    """
     # Use json_checker to set defaults as needed.
     event_details = json_checker(event_details)
     
@@ -117,13 +143,19 @@ def build_event_body(event_details: dict, duration: int) -> dict:
     return event_body
 
 def create_calendar_event(event_details: dict, duration: int) -> None:
-    """Creates an event on Google Calendar using provided details."""
+    """Creates an event on Google Calendar using provided details.
+    Parameters:
+        event_details (dict): The details of the event to be created.
+        duration (int): The duration of the event in hours.
+    Returns:
+       None
+    """
     service = get_google_calendar_service()
     event_body = build_event_body(event_details, duration)
 
     try:
         created_event = service.events().insert(calendarId="primary", body=event_body).execute()
-        print("\n\033[92mEvent successfully created on Google Calendar!\033[0m")
+        print("mEvent successfully created on Google Calendar!")
         print(f"View event online: {created_event.get('htmlLink')}\n")
     except Exception as e:
         print(f"Error creating event: {e}")
