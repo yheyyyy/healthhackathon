@@ -156,22 +156,20 @@ def create_calendar_event(event_details: dict, duration: int) -> None:
         event_details (dict): The details of the event to be created.
         duration (int): The duration of the event in hours.
     Returns:
-       None
+        None
     """
     service = get_google_calendar_service()
     event_body = build_event_body(event_details, duration)
 
     try:
         created_event = service.events().insert(calendarId="primary", body=event_body).execute()
-        print("mEvent successfully created on Google Calendar!")
+        print("Event successfully created on Google Calendar!")
         print(f"View event online: {created_event.get('htmlLink')}\n")
     except Exception as e:
         print(f"Error creating event: {e}")
         
 def main(message):
     appointment_details = extract_appointment_details(message)
-    duration =1
+    duration = 1
     create_calendar_event(appointment_details, duration)
     return appointment_details
-
-
