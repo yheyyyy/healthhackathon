@@ -14,50 +14,58 @@ def extract_appointment_details(message):
     """
     Extracts appointment details from the given message and returns them in a JSON format.
     The function ensures the date is in the correct format and retries if there are any errors.
-    
     Parameters:
-        message (str): The message containing the appointment details.
-        
+    message (str): The message containing the appointment details.
     Returns:
-        dict: The extracted appointment details in a JSON format.
+    dict: The extracted appointment details in a JSON format.
     """
     json_format = """
     {
-    "appointment":
-    "location": 
-    "date": DD MMM YYYY (example: 5 FEB 2024)
-    "time": 
-    "description": 
+    "appointment": "",
+    "location": "",
+    "date": "DD MMM YYYY (example: 5 FEB 2024)",
+    "time": "HH:MM AM/PM (example: 10:30 AM)",
+    "description": ""
     }
     """
     prompt = f"""Extract the following text and return in a JSON format, no need for new line
     {message}
-
     Example JSON format:
     {json_format}
     """
-    while True:
+    max_retries = 5
+    retries = 0
+
+    while retries < max_retries:
         try:
             response = get_response(prompt)
             appointment_details = json.loads(response)
-            
+
             # Check if the date is in "DD MMM YYYY" format
             date_str = appointment_details.get("date", "")
             if not re.fullmatch(r"\d{1,2} [A-Za-z]{3} \d{4}", date_str):
                 print("Date format does not match expected 'DD MMM YYYY' format, retrying...")
+                print(date_str)
+                retries += 1
                 continue
 
             # Check for any error in the JSON response
             if "Error" in appointment_details:
                 print("Error detected, retrying...")
+                retries += 1
                 continue
-            else:
-                break
+
+            return appointment_details
+
         except json.JSONDecodeError:
             print("JSONDecodeError detected, retrying...")
+            retries += 1
         except Exception as e:
             print(f"An unexpected error occurred: {e}, retrying...")
-    return appointment_details
+            retries += 1
+
+    print("Failed to extract appointment details after multiple attempts.")
+    return None
 
 def json_checker(json_data):
     """
@@ -110,7 +118,7 @@ def build_event_body(event_details: dict, duration: int) -> dict:
         event_details (dict): The details of the event to be created.
         duration (int): The duration of the event in hours.
     Returns:
-       dict: The event body for the Google Calendar API.
+        dict: The event body for the Google Calendar API.
     """
     # Use json_checker to set defaults as needed.
     event_details = json_checker(event_details)

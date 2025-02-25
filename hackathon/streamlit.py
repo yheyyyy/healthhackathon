@@ -1,8 +1,12 @@
 import streamlit as st
 from create_calendar import main
+from get_response import get_response
 import streamlit as st
 
 def chatbot():
+    """
+    A Streamlit chatbot that schedules appointments based on user input.
+    """
     st.title("Appointment Chatbot")
 
     # Initialize chat history
@@ -25,7 +29,7 @@ def chatbot():
         appointment_details = main(prompt)
         
         # Add assistant response to chat history
-        response = f"Appointment details: {appointment_details}"
+        response = f"Appointment Created! Please check you Google calendar for details: \n{appointment_details}"
         st.session_state.messages.append({"role": "assistant", "content": response})
         # Display assistant response in chat message container
         with st.chat_message("assistant"):
