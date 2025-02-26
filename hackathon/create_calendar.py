@@ -94,8 +94,7 @@ def get_google_calendar_service():
     if not creds or not creds.valid:
         # Use the downloaded OAuth credentials file
         flow = InstalledAppFlow.from_client_secrets_file(
-            "client_secret_972633486251-vevgirvna7fs0v6mmaqillei0k6qdj0a"
-            ".apps.googleusercontent.com.json",
+            "credentials.json",
             SCOPES
         )
         # Use port 8080 which matches the configured redirect URI
