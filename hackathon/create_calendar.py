@@ -81,35 +81,31 @@ def json_checker(json_data):
     return json_data
 
 def get_google_calendar_service():
-    """Authenticate and return a Google Calendar service instance.
-    Returns:
-        googleapiclient.discovery.Resource: The Google Calendar service instance.
-    """
-    load_dotenv()
+    """Authenticate and return a Google Calendar service instance."""
     SCOPES = ["https://www.googleapis.com/auth/calendar"]
+    creds = None
 
-    flow = InstalledAppFlow.from_client_config(
-        {
-            "installed": {
-                "client_id": os.getenv("GOOGLE_CLIENT_ID"),
-                "client_secret": os.getenv("GOOGLE_CLIENT_SECRET"),
-                "auth_uri": os.getenv("GOOGLE_AUTH_URI"),
-                "token_uri": os.getenv("GOOGLE_TOKEN_URI"),
-                "auth_provider_x509_cert_url": os.getenv("GOOGLE_AUTH_PROVIDER_CERT_URL"),
-                "redirect_uris": ["http://localhost"],
-            }
-        },
-        SCOPES,
-    )
-
+    # Check if token.pickle exists
     if os.path.exists("token.pickle"):
-        credentials = pickle.load(open("token.pickle", "rb"))
-    else:
-        credentials = flow.run_local_server(port=8080)
+        with open("token.pickle", "rb") as token:
+            creds = pickle.load(token)
+    
+    # If no valid credentials available, let the user log in
+    if not creds or not creds.valid:
+        # Use the downloaded OAuth credentials file
+        flow = InstalledAppFlow.from_client_secrets_file(
+            "client_secret_972633486251-vevgirvna7fs0v6mmaqillei0k6qdj0a"
+            ".apps.googleusercontent.com.json",
+            SCOPES
+        )
+        # Use port 8080 which matches the configured redirect URI
+        creds = flow.run_local_server(port=8080)
+        
+        # Save the credentials for the next run
         with open("token.pickle", "wb") as token:
-            pickle.dump(credentials, token)
+            pickle.dump(creds, token)
 
-    service = build("calendar", "v3", credentials=credentials)
+    service = build("calendar", "v3", credentials=creds)
     return service
 
 def build_event_body(event_details: dict, duration: int) -> dict:
