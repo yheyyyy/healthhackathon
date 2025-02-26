@@ -12,17 +12,20 @@ def create_unified_agent():
             name="Schedule_Appointment",
             func=main,
             description=(
-                "Use this tool for scheduling appointments. Pass the appointment message exactly as received. "
-                "The message must be in format: 'Dear [Name], You have a [Appointment Type] at [Location] "
-                "on [Date] at [Time].'"
+                "Use this tool for scheduling appointments. Pass the appt "
+                "message exactly as received. This function will run main "
+                "and create a calendar in google calendar."
+                "The message must be in format: "
+                "'Dear [Name], You have a [Appointment Type] at [Location] on "
+                "[Date] at [Time].'"
             )
         ),
         Tool(
             name="General_Chat",
             func=get_response,
             description=(
-                "Use this for general chat interactions about mental health services, "
-                "appointments, and other healthcare related queries."
+                "Use this for general chat interactions about mental health "
+                "services, appointments, and other healthcare related queries."
             )
         )
     ]
@@ -49,19 +52,25 @@ def create_unified_agent():
     return agent
 
 
+def format_appointment_response(appt: dict) -> str:
+    """Format appointment details with proper line breaks."""
+    return (
+        "✅ Appointment created!\n"
+        f"**Appointment Name:**\n{appt['appointment']}\n"
+        f"**Location:**\n{appt['location']}\n"
+        f"**Date:**\n{appt['date']}\n"
+        f"**Time:**\n{appt['time']}"
+    )
+
+
 def process_message(message: str) -> str:
     """Process a message using the unified agent and return the response."""
     agent = create_unified_agent()
     
-    # If it's an appointment message, use the Schedule_Appointment tool directly
     if message.startswith("Dear"):
         try:
             appointment_details = main(message)
-            return (f"✅ Appointment created:\n"
-                    f"Appointment Name: {appointment_details['appointment']}\n"
-                    f"Location: {appointment_details['location']}\n"
-                    f"Date: {appointment_details['date']}\n"
-                    f"Time: {appointment_details['time']}")
+            return format_appointment_response(appointment_details)
         except Exception as e:
             return f"Error scheduling appointment: {str(e)}"
     
@@ -76,4 +85,7 @@ def process_message(message: str) -> str:
             end_idx = error_str.rfind("'}")
             if start_idx > -1 and end_idx > -1:
                 return error_str[start_idx:end_idx]
-        return "I apologize, but I encountered an error processing your request. Please try again."
+        return (
+            "I apologize, but I encountered an error processing your request. "
+            "Please try again."
+        )
