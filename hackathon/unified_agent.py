@@ -1,20 +1,39 @@
+import easyocr
 from langchain.agents import Tool, initialize_agent, AgentType
 from langchain_ollama.llms import OllamaLLM
 from langchain.chains.conversation.memory import ConversationBufferMemory
 from create_calendar import main
 from get_response import get_response
+import io
+from PIL import Image
 
 
 def create_unified_agent():
+    # Initialize EasyOCR reader
+    ocr_reader = easyocr.Reader(['en'])  # You can add more languages if needed
+
+    # OCR function for EasyOCR integration
+    def ocr_tool_function(image_bytes: bytes) -> str:
+        """Extract text from image using EasyOCR."""
+        image = Image.open(io.BytesIO(image_bytes))
+        ocr_result = ocr_reader.readtext(image)
+        extracted_text = ' '.join([text[1] for text in ocr_result])
+        return extracted_text
+
     # Initialize the tools
     tools = [
+        Tool(
+            name="OCR_Tool",
+            func=ocr_tool_function,
+            description="Use this tool to extract text from images."
+        ),
         Tool(
             name="Schedule_Appointment",
             func=main,
             description=(
                 "Use this tool for scheduling appointments. Pass the appt "
                 "message exactly as received. This function will run main "
-                "and create a calendar in google calendar."
+                "and create a calendar in Google Calendar."
                 "The message must be in format: "
                 "'Dear [Name], You have a [Appointment Type] at [Location] on "
                 "[Date] at [Time].'"
@@ -51,7 +70,6 @@ def create_unified_agent():
 
     return agent
 
-
 def format_appointment_response(appt: dict) -> str:
     """Format appointment details with proper line breaks."""
     return (
@@ -63,10 +81,14 @@ def format_appointment_response(appt: dict) -> str:
     )
 
 
-def process_message(message: str) -> str:
+def process_message(message: str, image_bytes: bytes = None) -> str:
     """Process a message using the unified agent and return the response."""
     agent = create_unified_agent()
-    
+
+    if image_bytes:
+        extracted_text = agent.invoke({"input": image_bytes})
+        message = extracted_text  # Replace the original message with OCR result
+
     if message.startswith("Dear"):
         try:
             appointment_details = main(message)
