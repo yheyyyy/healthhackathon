@@ -20,15 +20,12 @@ user_face = "imgs/face2.png"
 def chatbot():
     st.logo(logo, size="large")
     st.title("AI-Powered Healthcare Assistant")
-    st.sidebar.markdown("### Demo Instructions")
     
     if prompt := st.chat_input("How can I help you today?"):
-        # Immediately add user message and show it
         st.session_state.messages.append({
             "role": "user",
             "content": prompt
         })
-        # Get and add assistant response
         response = process_message(prompt)
         st.session_state.messages.append({
             "role": "assistant",
@@ -36,9 +33,28 @@ def chatbot():
         })
         st.rerun()
     
+    for message in st.session_state.messages:
+        if message["role"] == "user":
+            with st.chat_message("user", avatar=user_face):
+                st.write(message["content"])
+        else:
+            with st.chat_message("assistant", avatar=assist_face):
+                st.write(message["content"])
+    
+    st.sidebar.markdown("### Demo Instructions")
+    
     if st.sidebar.button("❓ What are the Mental Health Services?"):
         prompt = "What are the mental health services available?"
-        st.session_state.preview_message = prompt
+        st.session_state.messages.append({
+            "role": "user",
+            "content": prompt
+        })
+        response = process_message(prompt)
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": response
+        })
+        st.rerun()
         
     if st.sidebar.button("💡 Help me schedule an appointment"):
         prompt = ("Dear Ms. DIANE, You have a First Visit Consultation at ENT-Head & Neck Surg Ctr - \
