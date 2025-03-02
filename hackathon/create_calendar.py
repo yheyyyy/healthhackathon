@@ -1,10 +1,8 @@
 import json
-import requests
 import os
 import re
 import json
 import pickle
-from dotenv import load_dotenv
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from datetime import datetime, timedelta

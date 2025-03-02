@@ -2,6 +2,7 @@ import streamlit as st
 import easyocr
 from unified_agent import process_message
 
+conda
 def chatbot():
     st.title("AI-Powered Healthcare Assistant")
 

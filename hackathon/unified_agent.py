@@ -1,25 +1,12 @@
-import easyocr
 from langchain.agents import Tool, initialize_agent, AgentType
 from langchain_ollama.llms import OllamaLLM
 from langchain.chains.conversation.memory import ConversationBufferMemory
+from ocr_tool import ocr_tool_function
 from create_calendar import main
 from get_response import get_response
-import io
-from PIL import Image
 
 
 def create_unified_agent():
-    # Initialize EasyOCR reader
-    ocr_reader = easyocr.Reader(['en'])  # You can add more languages if needed
-
-    # OCR function for EasyOCR integration
-    def ocr_tool_function(image_bytes: bytes) -> str:
-        """Extract text from image using EasyOCR."""
-        image = Image.open(io.BytesIO(image_bytes))
-        ocr_result = ocr_reader.readtext(image)
-        extracted_text = ' '.join([text[1] for text in ocr_result])
-        return extracted_text
-
     # Initialize the tools
     tools = [
         Tool(
