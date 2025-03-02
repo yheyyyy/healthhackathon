@@ -1,6 +1,6 @@
 import streamlit as st
 from unified_agent import process_message
-
+from ocr_tool import ocr_tool_function
 def chatbot():
     st.title("AI-Powered Healthcare Assistant")
     st.sidebar.markdown("### Example Prompts")
@@ -22,14 +22,7 @@ def chatbot():
     uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
     
     if uploaded_file is not None:
-        # Read the image and process text using EasyOCR
-        image_bytes = uploaded_file.read()
-        # Use EasyOCR's readtext function to extract text from the uploaded image
-        ocr_result = reader.readtext(image_bytes)  # This line performs the OCR
-        
-        # Extract the text from the OCR result
-        extracted_text = ' '.join([text[1] for text in ocr_result])
-        
+        extracted_text = ocr_tool_function(uploaded_file)        
         st.image(uploaded_file, caption='Uploaded Image', use_container_width=True)
         st.write("Extracted Text: ", extracted_text)
 
