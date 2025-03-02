@@ -3,12 +3,14 @@ from unified_agent import process_message
 from ocr_tool import ocr_tool_function
 from PIL import Image
 
-
 # Initialize session state
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "preview_message" not in st.session_state:
     st.session_state.preview_message = None
+
+with open('css/style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
     
 # Load the logo and face images
 logo = Image.open("imgs/logo.png")
@@ -20,9 +22,19 @@ def chatbot():
     st.title("AI-Powered Healthcare Assistant")
     st.sidebar.markdown("### Demo Instructions")
     
-    # Initialize session state for preview message
-    if "preview_message" not in st.session_state:
-        st.session_state.preview_message = None
+    if prompt := st.chat_input("How can I help you today?"):
+        # Immediately add user message and show it
+        st.session_state.messages.append({
+            "role": "user",
+            "content": prompt
+        })
+        # Get and add assistant response
+        response = process_message(prompt)
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": response
+        })
+        st.rerun()
     
     if st.sidebar.button("❓ What are the Mental Health Services?"):
         prompt = "What are the mental health services available?"
@@ -76,10 +88,6 @@ def chatbot():
                 st.session_state.preview_message = None
                 st.rerun()
 
-    # Regular chat input
-    if prompt := st.chat_input("How can I help you today?"):
-        st.session_state.preview_message = prompt
-        st.rerun()
 
 if __name__ == "__main__":
     chatbot()
