@@ -1,15 +1,8 @@
 import streamlit as st
-import easyocr
 from unified_agent import process_message
 
-conda
 def chatbot():
     st.title("AI-Powered Healthcare Assistant")
-
-    # Initialize the OCR reader
-    reader = easyocr.Reader(['en'])  # Define the language(s) for OCR processing (e.g., 'en' for English)
-
-    # Add examples section at the top
     st.sidebar.markdown("### Example Prompts")
     
     # Initialize session state for preview message
