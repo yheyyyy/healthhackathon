@@ -90,7 +90,7 @@ ollama pull mistral:7b
 This will download the nuextract-v1.5 and mistral:7b model for Ollama for the extraction task.
 3. Keep Ollama running in the background while using the application
 
-### 2. Google Calendar Setup
+### 2A. Google Calendar Setup
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Create a new project
 3. Enable Google Calendar API
@@ -100,6 +100,16 @@ This will download the nuextract-v1.5 and mistral:7b model for Ollama for the ex
 7. Download the credentials JSON file
 8. Store this JSON credentials file in the root directory of this project
 9. Rename the JSON file to `credentials.json`
+
+### 2B. Google Calendar iFrame Setup
+1. Go to [Google Calendar](https://calendar.google.com/)
+2. Create a new calendar for the application (if required)
+3. Click Setting icon (top right corner) > Settings for my calenders > Select the calendar you've created > Make available to public
+4. Go to Integrate calendar > Customize
+5. Set the details to show- recommended settings: Only show 'Navigation Button' and 'Date', set the width to own preference, select only the calendar to display
+6. Copy the iFrame code for Default view (Month, Week, Schedule) and paste it into the `streamlit.py` file line21 onwards. (to be refactored.)
+
+
 
 ## Requirements Installation
 
