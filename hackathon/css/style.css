@@ -1,0 +1,41 @@
+.main {
+    background: linear-gradient(to bottom, #E5FBFF, white);
+}
+.submit-button {
+    background-color: #58E492;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+.comment {
+    color: gray;
+    font-size: 12px;
+}
+/* Override Streamlit's default message styling */
+.stMarkdown div[data-testid="stMarkdownContainer"] {
+    color: #000000 !important;
+}
+.element-container div[data-testid="stChatMessageContent"] {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+/* Background colors for main container and sidebar */
+.reportview-container {
+    background: linear-gradient(to bottom right, #E5FBFF, #F0F8FF) !important;
+}
+.sidebar .sidebar-content {
+    background: linear-gradient(to bottom, #F8FBFF, #E5FBFF) !important;
+}
+
+/* Additional styling for better visual hierarchy */
+[data-testid="stSidebar"] {
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+/* Make sure the main content area has proper background */
+.stApp {
+    background: linear-gradient(to bottom right, #E5FBFF, #F0F8FF);
+} 
