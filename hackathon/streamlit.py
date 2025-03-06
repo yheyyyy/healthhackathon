@@ -2,7 +2,9 @@ from PIL import Image
 import streamlit as st
 from unified_agent import process_message
 from ocr_tool import ocr_tool_function
+import os
 
+os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
 # Initialize session state
 if "messages" not in st.session_state:
@@ -14,7 +16,7 @@ with open('css/style.css') as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
     
 # Load the logo and face images
-logo = Image.open("imgs/logo.png")
+logo = Image.open("imgs/logo.jpg")
 assist_face = "imgs/face.png"
 user_face = "imgs/face2.png"
 
@@ -32,7 +34,7 @@ def page3():
 
 
 def chatbot():
-    st.logo(logo, size="large")
+    st.logo(logo)
     st.title("AI-Powered Healthcare Assistant")
     
     if prompt := st.chat_input("How can I help you today?"):
