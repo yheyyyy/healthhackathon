@@ -115,28 +115,37 @@ def chatbot():
                 st.rerun()
 
 def main():
-    # Create a top navigation bar
-    st.markdown(
-        """
-        <div class="topnav">
-            <a href="?page=Chatbot">Chatbot</a>
-            <a href="?page=Monthly">Monthly Calendar</a>
-            <a href="?page=Weekly">Weekly Calendar</a>
-            <a href="?page=Overview">Appointment Overview</a>
-        </div>
-        
-        """,
-        unsafe_allow_html=True
-    )
-    st.query_params.get("page", ["Chatbot"])
+    # Initialize the page state if it doesn't exist
+    if 'current_page' not in st.session_state:
+        st.session_state.current_page = "Chatbot"
     
-    if st.query_params["page"] == "Monthly":
+    # Create a top navigation bar with buttons instead of links
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        if st.button("Chatbot", use_container_width=True):
+            st.session_state.current_page = "Chatbot"
+            
+    with col2:
+        if st.button("Monthly Calendar", use_container_width=True):
+            st.session_state.current_page = "Monthly"
+            
+    with col3:
+        if st.button("Weekly Calendar", use_container_width=True):
+            st.session_state.current_page = "Weekly"
+            
+    with col4:
+        if st.button("Appointment Overview", use_container_width=True):
+            st.session_state.current_page = "Overview"
+    
+    # Route to the appropriate page based on session state
+    if st.session_state.current_page == "Monthly":
         page1()
-    elif st.query_params["page"] == "Weekly":
+    elif st.session_state.current_page == "Weekly":
         page2()
-    elif st.query_params["page"] == "Overview":
+    elif st.session_state.current_page == "Overview":
         page3()
-    elif st.query_params["page"] == "Chatbot":
+    else:  # Default to Chatbot
         chatbot()
 
 
