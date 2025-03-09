@@ -16,6 +16,11 @@
 .reportview-container {
     background: linear-gradient(to bottom right, #E5FBFF, #F0F8FF);
 }
+
+img[data-testid="stLogo"] {
+    height: 3.5rem;
+}
+
 .sidebar .sidebar-content {
     background: linear-gradient(to bottom, #F8FBFF, #E5FBFF);
 }
@@ -37,24 +42,26 @@ Navigation Bar
     background-color: #E5FBFF;
 }
 
-.topnav a {
+
+
+div.stButton > button {
+    background-color: transparent;
     float: left;
     display: block;
+    border: none;
     color: #00274d;
+    background-color: #E5FBFF
+    width: 100%;
+}
+
+div.stButton > button:hover {
     background-color: #E5FBFF;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-.topnav a:hover {
+    color: #00274d
     text-decoration: underline;
-    font-weight: bold;
-
 }
 
-
-
-img[data-testid="stLogo"] {
-    height: 3.5rem;
+div.stButton > button:active {
+    background-color: #E5FBFF;
+    color: #000000;
+    text-decoration: blue
 }
