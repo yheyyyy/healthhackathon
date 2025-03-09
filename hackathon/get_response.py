@@ -1,10 +1,13 @@
-import json
+import os 
 import requests
-import json
+import re
+from dotenv import load_dotenv
+
+
 
 def get_response(prompt):
     """
-    To get response from the model via API call from Ollama and generate response from LLM with the given prompt.
+    Get response from OpenRouter API using the specified model.
     
     Parameters:
     prompt (str): The prompt to generate response.
@@ -12,18 +15,35 @@ def get_response(prompt):
     Returns:
     str: The generated response.
     """
+    # Load environment variables
+    load_dotenv()
     
-    url = "http://127.0.0.1:11434/v1/completions"
+    url = "https://openrouter.ai/api/v1/chat/completions"
+    
     headers = {
-        "Content-Type": "application/json"
-        }
-    data = {
-        "prompt": prompt,
-        "model": "iodose/nuextract-v1.5"
+        "Authorization": f"Bearer {os.getenv('OPENROUTER_API_KEY')}",
+        "Content-Type": "application/json",
     }
-    response = requests.post(url, headers=headers, data=json.dumps(data))
+    
+    data = {
+        "model": "google/gemini-2.0-flash-lite-preview-02-05:free",
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ]
+    }
+    
+    response = requests.post(url, headers=headers, json=data)
+        
     if response.status_code == 200:
         response_data = response.json()
-        return response_data["choices"][0]["text"]
+        content = response_data["choices"][0]["message"]["content"]
+        print(content)
+        match = re.search(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', content)
+        if match:
+            return match.group(0)
+        return "Error: No JSON content found"
     else:
-        return f"Error: {response.status_code}, {response.text}"
+        return f"Error at OpenRouter API: {response.status_code}, {response.text}"

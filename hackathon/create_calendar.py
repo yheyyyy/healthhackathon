@@ -19,51 +19,42 @@ def extract_appointment_details(message):
     """
     json_format = """
     {
-    "appointment": "",
-    "location": "",
-    "date": "DD MMM YYYY (example: 5 FEB 2024)",
-    "time": "HH:MM AM/PM (example: 10:30 AM)",
-    "description": ""
+    "appointment":
+    "location": 
+    "date": DD MMM YYYY (example: 5 FEB 2024)
+    "time": HH:MM AM/PM (example: 10:30 AM)
+    "description": 
     }
     """
     prompt = f"""Extract the following text and return in a JSON format, no need for new line
     {message}
+
     Example JSON format:
     {json_format}
     """
-    max_retries = 5
-    retries = 0
-
-    while retries < max_retries:
+    while True:
         try:
             response = get_response(prompt)
+            print(response)
             appointment_details = json.loads(response)
-
+            
             # Check if the date is in "DD MMM YYYY" format
             date_str = appointment_details.get("date", "")
             if not re.fullmatch(r"\d{1,2} [A-Za-z]{3} \d{4}", date_str):
                 print("Date format does not match expected 'DD MMM YYYY' format, retrying...")
-                print(date_str)
-                retries += 1
                 continue
 
             # Check for any error in the JSON response
             if "Error" in appointment_details:
                 print("Error detected, retrying...")
-                retries += 1
                 continue
-
-            return appointment_details
-
+            else:
+                break
         except json.JSONDecodeError:
             print("JSONDecodeError detected, retrying...")
-            retries += 1
         except Exception as e:
             print(f"An unexpected error occurred: {e}, retrying...")
-            retries += 1
-
-    print("Failed to extract appointment details after multiple attempts.")
-    return None
+    return appointment_details
 
 def json_checker(json_data):
     """
@@ -152,11 +143,21 @@ def create_calendar_event(event_details: dict, duration: int) -> None:
         None
     """
     service = get_google_calendar_service()
+    
+    # First, find the calendar ID for "Healthhacks"
+    calendar_list = service.calendarList().list().execute()
+    calendar_id = "primary"  # Default to primary calendar
+    
+    for calendar in calendar_list['items']:
+        if calendar['summary'] == "Healthhacks":
+            calendar_id = calendar['id']
+            break
+    
     event_body = build_event_body(event_details, duration)
 
     try:
-        created_event = service.events().insert(calendarId="primary", body=event_body).execute()
-        print("Event successfully created on Google Calendar!")
+        created_event = service.events().insert(calendarId=calendar_id, body=event_body).execute()
+        print("\n\033[92mEvent successfully created on Healthhacks Calendar!\033[0m")
         print(f"View event online: {created_event.get('htmlLink')}\n")
     except Exception as e:
         print(f"Error creating event: {e}")
