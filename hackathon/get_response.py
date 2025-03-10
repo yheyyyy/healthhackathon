@@ -15,9 +15,7 @@ def get_response(prompt):
     Returns:
     str: The generated response.
     """
-    # Load environment variables
     load_dotenv()
-    
     url = "https://openrouter.ai/api/v1/chat/completions"
     
     headers = {
@@ -36,14 +34,17 @@ def get_response(prompt):
     }
     
     response = requests.post(url, headers=headers, json=data)
-        
+    
     if response.status_code == 200:
         response_data = response.json()
         content = response_data["choices"][0]["message"]["content"]
-        print(content)
-        match = re.search(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}', content)
-        if match:
-            return match.group(0)
-        return "Error: No JSON content found"
+        return content
     else:
         return f"Error at OpenRouter API: {response.status_code}, {response.text}"
+    
+if __name__ == "__main__":
+    message = "Dear Ms. DIANE, You have a First Visit Consultation at ENT-Head & Neck Surg Ctr - 15C, NUH Medical Centre, Zone B, Level 15, 15c, Lift Lobby B2 on 19 Mar 2025 at 3:45 pm"
+    text = get_response(message)
+    print(text)
+    
+    
