@@ -59,14 +59,14 @@ def chatbot():
     
     st.sidebar.markdown("### Demo Instructions")
     
-    if st.sidebar.button("❓ What are the Mental Health Services?"):
-        prompt = "What are the mental health services available?"
+    if st.sidebar.button("❓ What is the hotline for rescheduling appointments?"):
+        prompt = "What is the hotline for rescheduling appointments?"
         st.session_state.preview_message = prompt
         st.rerun()
         
     if st.sidebar.button("💡 Help me schedule an appointment"):
         prompt = ("Dear Ms. DIANE, You have a First Visit Consultation at ENT-Head & Neck Surg Ctr - \
-                    15C, NUH Medical Centre, Zone B, Level 15, 15c, Lift Lobby B2 on 7 Mar 2025 at 3:45 pm.")
+                    15C, NUH Medical Centre, Zone B, Level 15, 15c, Lift Lobby B2 on 17 Mar 2025 at 3:45 pm.")
         st.session_state.preview_message = prompt
         st.rerun()
     
@@ -81,23 +81,21 @@ def chatbot():
 
     # Upload image
     uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
-    
     if uploaded_file is not None:
         extracted_text = ocr_tool_function(uploaded_file)        
         st.image(uploaded_file, caption='Uploaded Image', use_container_width=True)
         st.write("Extracted Text: ", extracted_text)
-
-        # Set the extracted text as the preview message
         st.session_state.preview_message = extracted_text
+        st.rerun()
+        
+    # # Initialize chat history
+    # if "messages" not in st.session_state:
+    #     st.session_state.messages = []
 
-    # Initialize chat history
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-
-    # Display chat history
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"], avatar=user_face):
-            st.markdown(message["content"])
+    # # Display chat history
+    # for message in st.session_state.messages:
+    #     with st.chat_message(message["role"], avatar=user_face):
+    #         st.markdown(message["content"])
 
     # Display preview message if exists
     if st.session_state.preview_message:
@@ -110,6 +108,7 @@ def chatbot():
                 st.session_state.messages.append({"role": "assistant", "content": response})
                 st.session_state.preview_message = None  # Clear preview
                 st.rerun()
+                
             if st.button("Cancel"):
                 st.session_state.preview_message = None
                 st.rerun()
