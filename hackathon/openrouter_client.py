@@ -27,3 +27,7 @@ class ChatOpenRouter(ChatOpenAI):
             openai_api_key=openai_api_key,
             **kwargs
         )
+if __name__=="__main__":      
+    chat = ChatOpenRouter()
+    text = chat.invoke("hello")
+    print(text.content)
