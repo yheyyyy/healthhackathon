@@ -26,7 +26,7 @@ def extract_appointment_details(message):
     "description": 
     }
     """
-    prompt = f"""Extract the following text and return in a JSON format, no need for new line
+    prompt = f"""Extract the following text and return in one single JSON format, no need for new line
     {message}
 
     Example JSON format:
@@ -35,8 +35,13 @@ def extract_appointment_details(message):
     while True:
         try:
             response = get_response(prompt)
-            print(response)
-            appointment_details = json.loads(response)
+            print (response)
+            match = re.search(r'({.*?})', response, re.DOTALL)
+            if match:
+                json_data = match.group(1)
+                parsed_data = json.loads(json_data)  
+                print(parsed_data)  
+                appointment_details = parsed_data  
             
             # Check if the date is in "DD MMM YYYY" format
             date_str = appointment_details.get("date", "")
@@ -167,3 +172,7 @@ def main(message):
     duration = 1
     create_calendar_event(appointment_details, duration)
     return appointment_details
+
+if __name__ == "__main__":
+    message = "Dear Ms. DIANE, You have a First Visit Consultation at ENT-Head & Neck Surg Ctr - 15C, NUH Medical Centre, Zone B, Level 15, 15c, Lift Lobby B2 on 19 Mar 2025 at 3:45 pm"
+    print(main(message))
