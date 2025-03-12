@@ -22,7 +22,7 @@ def extract_appointment_details(message):
     "appointment":
     "location": 
     "date": DD MMM YYYY (example: 5 FEB 2024)
-    "time": HH:MM AM/PM (example: 10:30 AM)
+    "time": HH:MM AM/PM (example: 10:30 AM, convert 10.30 to 10:30 AM)
     "description": 
     }
     """
