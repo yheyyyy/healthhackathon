@@ -71,10 +71,9 @@ def chatbot():
         st.rerun()
     
     if st.sidebar.button("📷 Insert sample screenshot"):
-        uploaded_file = "imgs/message.jpg"
-        extracted_text = ocr_tool_function(uploaded_file)        
-        st.image(uploaded_file, caption='Uploaded Image', use_container_width=True)
-        st.write("Extracted Text: ", extracted_text)
+        uploaded_file = "imgs/message.jpg"        
+        st.image(uploaded_file, caption='Uploaded Image', use_column_width=True)
+        extracted_text = ocr_tool_function(uploaded_file)
         st.session_state.preview_message = extracted_text
         st.rerun()
 
@@ -82,20 +81,11 @@ def chatbot():
     # Upload image
     uploaded_file = st.file_uploader("Upload an image", type=["png", "jpg", "jpeg"])
     if uploaded_file is not None:
+        # Display the uploaded image for preview
+        st.image(uploaded_file, caption='Uploaded Image', use_column_width=True)
+        # Process the image with OCR
         extracted_text = ocr_tool_function(uploaded_file)        
-        st.image(uploaded_file, caption='Uploaded Image', use_container_width=True)
-        st.write("Extracted Text: ", extracted_text)
         st.session_state.preview_message = extracted_text
-        st.rerun()
-        
-    # # Initialize chat history
-    # if "messages" not in st.session_state:
-    #     st.session_state.messages = []
-
-    # # Display chat history
-    # for message in st.session_state.messages:
-    #     with st.chat_message(message["role"], avatar=user_face):
-    #         st.markdown(message["content"])
 
     # Display preview message if exists
     if st.session_state.preview_message:
