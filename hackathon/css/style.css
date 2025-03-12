@@ -1,5 +1,5 @@
 .main {
-    background: linear-gradient(to bottom, #E5FBFF, white);
+    background: #F6F8F9;
 }
 .submit-button {
     background-color: #58E492;
@@ -18,11 +18,12 @@
 }
 
 img[data-testid="stLogo"] {
-    height: 3.5rem;
+    height: 2.0rem;
+    width: auto;
 }
 
 .sidebar .sidebar-content {
-    background: linear-gradient(to bottom, #F8FBFF, #E5FBFF);
+    background: #F6F8F9;
 }
 
 /* Additional styling for better visual hierarchy */
@@ -35,13 +36,10 @@ img[data-testid="stLogo"] {
 } 
 
 
-
 Navigation Bar
 .topnav {
-    overflow: hidden;
     background-color: #E5FBFF;
 }
-
 
 
 div.stButton > button {
@@ -65,3 +63,10 @@ div.stButton > button:active {
     color: #000000;
     text-decoration: blue
 }
+
+.fixed-button {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000; 
